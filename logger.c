@@ -22,7 +22,7 @@ void logger_log(int level, const char* color, bool terminate, const char* fmt, .
 	// determine log level
 	if (log_level == -1) {
 		const char* l = getenv("LOG_LEVEL");
-		log_level = l ? atoi(l) : LOG_LEVEL_INFO;
+		log_level = l ? atoi(l) : LOG_LEVEL_DEFAULT;
 	}
 
 	if (log_level < level) {

@@ -47,7 +47,11 @@
 #define INFOno(tag_)    INFO("%s: %s", (tag_), strerror(errno))
 #define DEBUGno(tag_)   DEBUG("%s: %s", (tag_), strerror(errno))
 
-/* Implementation Details Follow */
+/* Sets the default log level. */
+
+#define LOG_LEVEL_DEFAULT LOG_LEVEL_INFO
+
+/* Implementation details follow. */
 
 #define LOG_LEVEL_OFF     0
 #define LOG_LEVEL_ERROR   1
