@@ -34,13 +34,15 @@ void logger_log(int level, const char* color, bool terminate, const char* file,
 	// determine log file
 	if (log_file == NULL) {
 		const char* f = getenv("LOG_FILE");
-		if (f) {
+		if (f && strcmp(f, "-") != 0) {
 			log_file = fopen(f, "a");
 			if (!log_file) {
 				perror("Logger");
 				exit(1);
 			}
 			atexit(close_log_file);
+		} else if (f) {
+			log_file = stdout;
 		} else {
 			log_file = stderr;
 		}
@@ -48,9 +50,10 @@ void logger_log(int level, const char* color, bool terminate, const char* file,
 
 	// determine colorization
 	if (should_colorize == -1) {
-		const char* d = getenv("DISABLE_LOG_COLOR");
 		const char* t = getenv("TERM");
-		should_colorize = !d && log_file == stderr && t && strcmp(t, "dumb");
+		should_colorize =  getenv("DISABLE_LOG_COLOR") == NULL
+		                && (log_file == stderr || log_file == stdout)
+		                && (t && strcmp(t, "dumb"));
 	}
 
 	if (should_colorize) {

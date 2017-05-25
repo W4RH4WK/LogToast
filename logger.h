@@ -27,7 +27,7 @@
  *   LOG_LEVEL          0 = OFF, 1 = ERROR, 2 = WARNING, 3 = INFO, 4 = DEBUG
  *
  *   LOG_FILE           Appends log output to a file instead of writing it to
- *                      stderr.
+ *                      stderr. If set to `-` stdout will be used.
  *
  *   LOG_LOCATION       Set to also output source location.
  *
