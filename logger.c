@@ -75,14 +75,14 @@ void logger_log(int level, const char* color, bool terminate, const char* fmt, .
 		now_sz[0] = '\0';
 		strftime(now_sz, sizeof(now_sz), "%F %T", now);
 
-		fprintf(log_file, "%s", now_sz);
+		fputs(now_sz, log_file);
 	}
 
 	switch(level) {
-		case LOG_LEVEL_DEBUG:    fputs( " DEBUG   ", log_file); break;
-		case LOG_LEVEL_WARNING:  fputs( " WARNING ", log_file); break;
-		case LOG_LEVEL_ERROR:    fputs( " ERROR   ", log_file); break;
-		default:                 fputs( " INFO    ", log_file);
+		case LOG_LEVEL_DEBUG:    fputs(" DEBUG   ", log_file); break;
+		case LOG_LEVEL_WARNING:  fputs(" WARNING ", log_file); break;
+		case LOG_LEVEL_ERROR:    fputs(" ERROR   ", log_file); break;
+		default:                 fputs(" INFO    ", log_file);
 	}
 
 	vfprintf(log_file, fmt, args);
