@@ -27,7 +27,7 @@ void logger_log(int level, const char* color, bool terminate, const char* fmt, .
 	}
 
 	if (log_level < level) {
-		return;
+		goto done;
 	}
 
 	// determine log file
@@ -97,9 +97,10 @@ void logger_log(int level, const char* color, bool terminate, const char* fmt, .
 		fflush(log_file);
 	}
 
+done:
+	va_end(args);
+
 	if (terminate) {
 		exit(1);
 	}
-
-	va_end(args);
 }
