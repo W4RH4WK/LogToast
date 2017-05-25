@@ -7,6 +7,8 @@
 #include <string.h>
 #include <time.h>
 
+static int log_level = -1;
+static int should_colorize = -1;
 static FILE* log_file;
 
 static void close_log_file(void)
@@ -20,7 +22,6 @@ void logger_log(int level, const char* color, bool terminate, const char* fmt, .
 	va_start(args, fmt);
 
 	// determine log level
-	static int log_level = -1;
 	if (log_level == -1) {
 		const char* l = getenv("LOG_LEVEL");
 		log_level = l ? atoi(l) : LOG_LEVEL_INFO;
@@ -46,7 +47,6 @@ void logger_log(int level, const char* color, bool terminate, const char* fmt, .
 	}
 
 	// determine colorization
-	static int should_colorize = -1;
 	if (should_colorize == -1) {
 		const char* d = getenv("DISABLE_LOG_COLOR");
 		const char* t = getenv("TERM");
