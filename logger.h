@@ -29,15 +29,17 @@
  *   LOG_FILE           Appends log output to a file instead of writing it to
  *                      stderr.
  *
- *   DISABLE_LOG_COLOR  Set to disable colorization of log output
+ *   LOG_LOCATION       Set to also output source location.
+ *
+ *   DISABLE_LOG_COLOR  Set to disable colorization of log output.
  *
  */
 
-#define FATAL(f_, ...)    logger_log(LOG_LEVEL_ERROR,    LOG_COLOR_RED, true,  (f_), ##__VA_ARGS__)
-#define ERROR(f_, ...)    logger_log(LOG_LEVEL_ERROR,    LOG_COLOR_RED, false, (f_), ##__VA_ARGS__)
-#define WARNING(f_, ...)  logger_log(LOG_LEVEL_WARNING,  LOG_COLOR_YEL, false, (f_), ##__VA_ARGS__)
-#define INFO(f_, ...)     logger_log(LOG_LEVEL_INFO,     LOG_COLOR_CYN, false, (f_), ##__VA_ARGS__)
-#define DEBUG(f_, ...)    logger_log(LOG_LEVEL_DEBUG,    LOG_COLOR_BLU, false, (f_), ##__VA_ARGS__)
+#define FATAL(f_, ...)    logger_log(LOG_LEVEL_ERROR,    LOG_COLOR_RED, true,  __FILE__, __LINE__, (f_), ##__VA_ARGS__)
+#define ERROR(f_, ...)    logger_log(LOG_LEVEL_ERROR,    LOG_COLOR_RED, false, __FILE__, __LINE__, (f_), ##__VA_ARGS__)
+#define WARNING(f_, ...)  logger_log(LOG_LEVEL_WARNING,  LOG_COLOR_YEL, false, __FILE__, __LINE__, (f_), ##__VA_ARGS__)
+#define INFO(f_, ...)     logger_log(LOG_LEVEL_INFO,     LOG_COLOR_CYN, false, __FILE__, __LINE__, (f_), ##__VA_ARGS__)
+#define DEBUG(f_, ...)    logger_log(LOG_LEVEL_DEBUG,    LOG_COLOR_BLU, false, __FILE__, __LINE__, (f_), ##__VA_ARGS__)
 
 /* These macros are to be used like perror(3) with an argument. */
 
@@ -68,6 +70,7 @@
 #define LOG_COLOR_CYN  "\x1B[36m"
 #define LOG_COLOR_WHT  "\x1B[37m"
 
-void logger_log(int level, const char* color, bool terminate, const char* fmt, ...);
+void logger_log(int level, const char* color, bool terminate, const char* file,
+                long line, const char* fmt, ...);
 
 #endif

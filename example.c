@@ -15,7 +15,7 @@ int main(void)
 	ERROR("You have no respect for logic.");
 
 	/* These macros can be used just like printf(3). */
-	INFO("2 + 3 = %d", 5);
+	INFO("First equation 2 + 3 = %d", 5);
 
 	/* You could also define your own macros, attaching a tag to each message. */
 	#define INFO_DATABASE(f_, ...) INFO(("[ Database ] " f_), ##__VA_ARGS__)

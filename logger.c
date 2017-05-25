@@ -6,6 +6,7 @@
 #include <time.h>
 
 static int log_level = -1;
+static int log_location = -1;
 static int should_colorize = -1;
 static FILE* log_file;
 
@@ -14,7 +15,8 @@ static void close_log_file(void)
 	fclose(log_file);
 }
 
-void logger_log(int level, const char* color, bool terminate, const char* fmt, ...)
+void logger_log(int level, const char* color, bool terminate, const char* file,
+                long line, const char* fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
@@ -81,6 +83,15 @@ void logger_log(int level, const char* color, bool terminate, const char* fmt, .
 		case LOG_LEVEL_WARNING:  fputs(" WARNING ", log_file); break;
 		case LOG_LEVEL_ERROR:    fputs(" ERROR   ", log_file); break;
 		default:                 fputs(" INFO    ", log_file);
+	}
+
+	/* determine whether source locations should be printed */
+	if (log_location == -1) {
+		log_location = getenv("LOG_LOCATION") != NULL;
+	}
+
+	if (log_location) {
+		fprintf(log_file, "%s:%ld | ", file, line);
 	}
 
 	vfprintf(log_file, fmt, args);
