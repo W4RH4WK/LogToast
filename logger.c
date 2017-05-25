@@ -1,10 +1,8 @@
 #include "logger.h"
 
-#include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
 
 static int log_level = -1;

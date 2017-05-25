@@ -1,7 +1,9 @@
 #ifndef LOGGER_H_
 #define LOGGER_H_
 
+#include <errno.h>
 #include <stdbool.h>
+#include <string.h>
 
 /*                                                  _.---._
  *                                              _.-~       ~-._
@@ -18,7 +20,7 @@
  *                                            ~-..----~
  *
  *
- * The following macros can be used like `printf` for logging purposes. FATAL
+ * The following macros can be used like printf(3) for logging purposes. FATAL
  * will also terminate the program. The following environment variables are
  * considered:
  *
@@ -36,6 +38,14 @@
 #define WARNING(f_, ...)  logger_log(LOG_LEVEL_WARNING,  LOG_COLOR_YEL, false, (f_), ##__VA_ARGS__)
 #define INFO(f_, ...)     logger_log(LOG_LEVEL_INFO,     LOG_COLOR_CYN, false, (f_), ##__VA_ARGS__)
 #define DEBUG(f_, ...)    logger_log(LOG_LEVEL_DEBUG,    LOG_COLOR_BLU, false, (f_), ##__VA_ARGS__)
+
+/* These macros are to be used like perror(3) with an argument. */
+
+#define FATALno(tag_)   FATAL("%s: %s", (tag_), strerror(errno))
+#define ERRORno(tag_)   ERROR("%s: %s", (tag_), strerror(errno))
+#define WARNINGno(tag_) WARNING("%s: %s", (tag_), strerror(errno))
+#define INFOno(tag_)    INFO("%s: %s", (tag_), strerror(errno))
+#define DEBUGno(tag_)   DEBUG("%s: %s", (tag_), strerror(errno))
 
 /* Implementation Details Follow */
 
