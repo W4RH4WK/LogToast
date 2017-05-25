@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+static FILE* log_file;
 static int log_level = -1;
 static int log_location = -1;
 static int should_colorize = -1;
-static FILE* log_file;
 
 static void close_log_file(void)
 {
@@ -21,17 +21,7 @@ void logger_log(int level, const char* color, bool terminate, const char* file,
 	va_list args;
 	va_start(args, fmt);
 
-	// determine log level
-	if (log_level == -1) {
-		const char* l = getenv("LOG_LEVEL");
-		log_level = l ? atoi(l) : LOG_LEVEL_DEFAULT;
-	}
-
-	if (log_level < level) {
-		goto done;
-	}
-
-	// determine log file
+	/* determine log_file */
 	if (log_file == NULL) {
 		const char* f = getenv("LOG_FILE");
 		if (f && strcmp(f, "-") != 0) {
@@ -48,7 +38,18 @@ void logger_log(int level, const char* color, bool terminate, const char* file,
 		}
 	}
 
-	// determine colorization
+	/* determine log_level */
+	if (log_level == -1) {
+		const char* l = getenv("LOG_LEVEL");
+		log_level = l ? atoi(l) : LOG_LEVEL_DEFAULT;
+	}
+
+	/* determine log_location */
+	if (log_location == -1) {
+		log_location = getenv("LOG_LOCATION") != NULL;
+	}
+
+	/* determine should_colorize */
 	if (should_colorize == -1) {
 		const char* t = getenv("TERM");
 		should_colorize =  getenv("DISABLE_LOG_COLOR") == NULL
@@ -56,11 +57,15 @@ void logger_log(int level, const char* color, bool terminate, const char* file,
 		                && (t && strcmp(t, "dumb"));
 	}
 
+	if (log_level < level) {
+		goto done;
+	}
+
 	if (should_colorize) {
 		fputs(color, log_file);
 	}
 
-	// time
+	/* timestamp */
 	{
 		time_t raw_now;
 		if (time(&raw_now) == -1) {
@@ -88,15 +93,11 @@ void logger_log(int level, const char* color, bool terminate, const char* file,
 		default:                 fputs(" INFO    ", log_file);
 	}
 
-	/* determine whether source locations should be printed */
-	if (log_location == -1) {
-		log_location = getenv("LOG_LOCATION") != NULL;
-	}
-
 	if (log_location) {
 		fprintf(log_file, "%s:%ld | ", file, line);
 	}
 
+	/* actual log message */
 	vfprintf(log_file, fmt, args);
 
 	if (should_colorize) {
