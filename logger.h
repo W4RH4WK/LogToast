@@ -3,6 +3,7 @@
 
 #include <errno.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 
 /*                                                  _.---._
@@ -52,6 +53,22 @@
 /* Sets the default log level. */
 
 #define LOG_LEVEL_DEFAULT LOG_LEVEL_INFO
+
+/* Compiler switch to completely disable log output. */
+
+#ifdef DISABLE_LOG
+    #undef FATAL
+    #undef ERROR
+    #undef WARNING
+    #undef INFO
+    #undef DEBUG
+
+    #define FATAL(f_, ...)   exit(1);
+    #define ERROR(f_, ...)   /* empty */
+    #define WARNING(f_, ...) /* empty */
+    #define INFO(f_, ...)    /* empty */
+    #define DEBUG(f_, ...)   /* empty */
+#endif
 
 /* Implementation details follow. */
 
