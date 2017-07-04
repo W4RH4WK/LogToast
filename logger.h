@@ -39,6 +39,8 @@
  *
  * The following defines can be set during compilation:
  *
+ *   DISABLE_LOG         Completely disables log output.
+ *
  *   LOG_MULTI_THREADED  Locks a mutex for printing (not initialization).
  *                       Requires -pthread.
  *
@@ -62,7 +64,7 @@
 
 #define LOG_LEVEL_DEFAULT LOG_LEVEL_INFO
 
-/* Compiler switch to completely disable log output. */
+/* Implementation details follow. */
 
 #ifdef DISABLE_LOG
     #undef FATAL
@@ -77,8 +79,6 @@
     #define INFO(f_, ...)    /* empty */
     #define DEBUG(f_, ...)   /* empty */
 #endif
-
-/* Implementation details follow. */
 
 #define LOG_LEVEL_OFF     0
 #define LOG_LEVEL_ERROR   1
