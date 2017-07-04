@@ -1,4 +1,5 @@
-CFLAGS = -Wall -Wextra -std=c99 -O2
+CFLAGS = -Wall -Wextra -std=c99 -pthread -DLOG_MULTI_THREADED -O2
+LDLIBS = -pthread
 
 .PHONY: all
 all: example

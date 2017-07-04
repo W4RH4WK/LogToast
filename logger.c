@@ -11,10 +11,22 @@ static int log_level;
 static int log_location;
 static int should_colorize;
 
+#ifdef LOG_MULTI_THREADED
+#include <pthread.h>
+static pthread_mutex_t log_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif
+
 static void close_log_file(void)
 {
 	fclose(log_file);
 }
+
+#ifdef LOG_MULTI_THREADED
+static void destory_log_mutex(void)
+{
+	pthread_mutex_destroy(&log_mutex);
+}
+#endif
 
 static void logger_init(void)
 {
@@ -46,6 +58,12 @@ static void logger_init(void)
 					&& (log_file == stderr || log_file == stdout)
 					&& (t && strcmp(t, "dumb"));
 
+#ifdef LOG_MULTI_THREADED
+	/* setup mutex */
+	pthread_mutex_init(&log_mutex, NULL);
+	atexit(destory_log_mutex);
+#endif
+
 	logger_initialized = true;
 }
 
@@ -62,6 +80,16 @@ void logger_log(int level, const char* color, bool terminate, const char* file,
 	if (log_level < level) {
 		goto done;
 	}
+
+#ifdef LOG_MULTI_THREADED
+	if (pthread_mutex_lock(&log_mutex) != 0) {
+		perror("pthread_mutex_lock");
+		exit(1);
+	}
+
+	/* ignore return value of mutex unlock */
+	pthread_cleanup_push((void (*)(void*)) pthread_mutex_unlock, &log_mutex);
+#endif
 
 	if (should_colorize) {
 		fputs(color, log_file);
@@ -111,6 +139,10 @@ void logger_log(int level, const char* color, bool terminate, const char* file,
 	if (log_file != stderr && (level == LOG_LEVEL_WARNING || level == LOG_LEVEL_ERROR)) {
 		fflush(log_file);
 	}
+
+#ifdef LOG_MULTI_THREADED
+	pthread_cleanup_pop(1);
+#endif
 
 done:
 	va_end(args);

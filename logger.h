@@ -22,8 +22,10 @@
  *
  *
  * The following macros can be used like printf(3) for logging purposes. FATAL
- * will also terminate the program. The following environment variables are
- * considered:
+ * will also terminate the program.
+ *
+ *
+ * The following environment variables are considered:
  *
  *   LOG_LEVEL          0 = OFF, 1 = ERROR, 2 = WARNING, 3 = INFO, 4 = DEBUG
  *
@@ -33,6 +35,12 @@
  *   LOG_LOCATION       Set to also output source location.
  *
  *   DISABLE_LOG_COLOR  Set to disable colorization of log output.
+ *
+ *
+ * The following defines can be set during compilation:
+ *
+ *   LOG_MULTI_THREADED  Locks a mutex for printing (not initialization).
+ *                       Requires -pthread.
  *
  */
 
