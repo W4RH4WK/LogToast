@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
 
 static bool logger_initialized = false;
 
@@ -53,10 +54,11 @@ static void logger_init(void)
 	log_location = getenv("LOG_LOCATION") != NULL;
 
 	/* determine should_colorize */
-	const char* t = getenv("TERM");
-	should_colorize =  getenv("DISABLE_LOG_COLOR") == NULL
-					&& (log_file == stderr || log_file == stdout)
-					&& (t && strcmp(t, "dumb"));
+	should_colorize = false;
+	if (getenv("DISABLE_LOG_COLOR") == NULL) {
+		should_colorize = (log_file == stderr && isatty(STDERR_FILENO))
+		               || (log_file == stdout && isatty(STDOUT_FILENO));
+	}
 
 #ifdef LOG_MULTI_THREADED
 	/* setup mutex */
